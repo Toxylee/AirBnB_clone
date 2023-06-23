@@ -1,20 +1,26 @@
 #!/usr/bin/python3
-"""User class."""
+
+"""
+This class contains optional user details to be supplied
+in addition to the baseclass i.e BaseModel class attributes. Also, it
+inherit all its parent (all BaseModel) methods.
+
+"""
+
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """Represent a User.
+    """This class contains all the optional user details to be supplied
+
     Attributes:
-        email (str): The email of the user.
-        password (str): The password of the user.
-        first_name (str): The first name of the user.
-        last_name (str): The last name of the user.
+        Fields:
+            email:string - The user email
+            password:string - The user password
+            first_name:string - The user first name
+            last_name:string - The user last name
     """
     email = ""
-    
     password = ""
-
     first_name = ""
-
     last_name = ""

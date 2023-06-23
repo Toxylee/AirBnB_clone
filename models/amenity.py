@@ -1,23 +1,20 @@
 #!/usr/bin/python3
 
-"""Amenity class."""
+"""
+This class is composed of optional amenity details to be supplied
+in addition to the baseclass i.e BaseModel class attributes. Also, it
+inherit all its parent (all BaseModel) methods.
+
+"""
 
 from models.base_model import BaseModel
 
 
-
-
-
 class Amenity(BaseModel):
-
-    """Represent an amenity.
+    """This class contains all the optional amenity details to be supplied
 
     Attributes:
-
-        name (str): The name of the amenity.
-
+        Fields:
+            name:string - The Amenity name
     """
-
-
-
     name = ""

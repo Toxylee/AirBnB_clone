@@ -1,52 +1,75 @@
 #!/usr/bin/python3
-"""
-A Parent class that other classes will inherit from
-"""
-import models
-import uuid
-from datetime import datetime
 
 """
-basemodel class that defines all common attributes/methods for other classes
+    This is the base class for all common attributes/methods for other
+    classes for this Airbnb project.
+
+    The goal of this class is to manage common attributes between all other
+    classes.
+
 """
+from uuid import uuid4
+from datetime import datetime
+import models
 
 
 class BaseModel:
+    """The base class for all other classes
+        Attributes:
+            Fields:
+                id:string - Unique id for each instance when created
+                created_at:datetime - The datetime when an instance was created
+                updated_at:datetime - The datetime when an instance created was
+                    updated
+            Methods:
+                __init__(self, *args, **kwargs): Initialize the instance when
+                    created either from dictionary key/value pair or otherwise
+                __str__(self): Prints the instance created in sring format
+                save(self): Updates the public instance attribute "updated_at"
+                    with the current datetime whenever an instance is modoify
+                to_dict(self): Return a dictionary containig all keys/values
+                    pairs of an instance
 
+    """
     def __init__(self, *args, **kwargs):
-        """ initializing attributes """
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
-
-        if len(kwargs) != 0:
-            for key, value in kwargs.items():
-                if key == 'created_at' or key == 'updated_at':
-                    i = "%Y-%m-%dT%H:%M:%S.%f"
-                    self.__dict__[key] = datetime.strptime(value, f)
+        """Initialize the instances either from dictionary key/value or
+        otherwise and save each instance"""
+        if kwargs and kwargs != {}:
+            for key in kwargs.keys():
+                if key == "__class__":
+                    continue
+                elif key == "created_at":
+                    self.created_at = datetime.fromisoformat(kwargs[key])
+                elif key == "updated_at":
+                    self.updated_at = datetime.fromisoformat(kwargs[key])
                 else:
-                    self.__dict__[key] = value
+                    setattr(self, key, kwargs[key])
         else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            """save each instance created to storage object (i.e dict or {})"""
             models.storage.new(self)
 
     def __str__(self):
-        """ returns class name, id, attribute dict """
-        class_name = self.__class__.__name__
-        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
-    
+        """Print an instance in string format"""
+        return "[{}] ({}) {}".format(
+                self.__class__.__name__, self.id, self.__dict__)
+
     def save(self):
-        """
-        updates pub instance attribute 'updated_at' with current datetime
-        """
-        self.updated_at = datetime.today()
+        """Update "updated_at" attribute with current datetime
+        and save/write the instance to a file"""
+        self.updated_at = datetime.now()
         models.storage.save()
 
     def to_dict(self):
-        """
-        returns dict containing all keys/values of '__dict__'
-        """
-        converted = self.__dict__.copy()
-        converted.["created_at"] = self.created_at.isoformat()
-        converted.["updated_at"] = self.updated_at.isoformat()
-        converted.["__class__"] = self.__class__.__name__
-        return (converted)
+        """Return a dictionary representation of the instance"""
+        new_dict = {}
+        new_dict['__class__'] = self.__class__.__name__
+
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], datetime):
+                new_dict[key] = self.__dict__[key].isoformat()
+            else:
+                new_dict[key] = self.__dict__[key]
+        return new_dict

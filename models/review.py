@@ -1,18 +1,24 @@
 #!/usr/bin/python3
-"""Review class."""
+
+"""
+This class is composed of optional Review details to be supplied
+in addition to the baseclass i.e BaseModel class attributes. Also, it
+inherit all its parent (all BaseModel) methods.
+
+"""
+
 from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """Represent a review.
+    """This class contains all the optional Review details to be supplied
+
     Attributes:
-        place_id (str): The Place id.
-        user_id (str): The User id.
-        text (str): The text of the review.
+        Fields:
+            place_id:string - The Place.id
+            user_id:string - The User.id
+            text:string - Review comments
     """
-
     place_id = ""
-
     user_id = ""
-
     text = ""

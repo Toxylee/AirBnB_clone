@@ -1,11 +1,20 @@
 #!/usr/bin/python3
-"""State class."""
+
+"""
+This class is composed of optional State details that can be supplied
+in addition to the baseclass i.e BaseModel class attributes. Also, it
+inherit all its parent (all BaseModel) methods.
+
+"""
+
 from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """Represent a state.
+    """This class contains all the optional State details to be supplied
+
     Attributes:
-        name (str): The name of the state.
+        Fields:
+            name:string - The name of the state
     """
     name = ""
