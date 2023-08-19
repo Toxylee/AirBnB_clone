@@ -10,8 +10,6 @@
 """
 from uuid import uuid4
 from datetime import datetime
-import models
-
 
 class BaseModel:
     """The base class for all other classes
@@ -32,44 +30,53 @@ class BaseModel:
 
     """
     def __init__(self, *args, **kwargs):
-        """Initialize the instances either from dictionary key/value or
-        otherwise and save each instance"""
-        if kwargs and kwargs != {}:
-            for key in kwargs.keys():
-                if key == "__class__":
-                    continue
-                elif key == "created_at":
-                    self.created_at = datetime.fromisoformat(kwargs[key])
-                elif key == "updated_at":
-                    self.updated_at = datetime.fromisoformat(kwargs[key])
-                else:
-                    setattr(self, key, kwargs[key])
-        else:
+        """
+        Initialize the BaseModel class
+        """
+
+        from models import storage
+        if not kwargs:
             self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            """save each instance created to storage object (i.e dict or {})"""
-            models.storage.new(self)
+            self.created_at = self.updated_at = datetime.now()
+            storage.new(self)
+        else:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key in ('created_at', 'updated_at'):
+                        setattr(self, key, datetime.fromisoformat(value))
+                    else:
+                        setattr(self, key, value)
 
     def __str__(self):
-        """Print an instance in string format"""
-        return "[{}] ({}) {}".format(
-                self.__class__.__name__, self.id, self.__dict__)
+        """
+        Returns the string representation of BaseModel object.
+        [<class name>] (<self.id>) <self.__dict__>
+        """
+        return "[{}] ({}) {}".format(type(self).__name__, self.id,
+                                     self.__dict__)
 
     def save(self):
-        """Update "updated_at" attribute with current datetime
-        and save/write the instance to a file"""
+        """
+        Updates 'self.updated_at' with the current datetime
+        """
+        from models import storage
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.save()
 
     def to_dict(self):
-        """Return a dictionary representation of the instance"""
-        new_dict = {}
-        new_dict['__class__'] = self.__class__.__name__
+        """
+        returns a dictionary containing all keys/values of __dict__
+        of the instance:
 
-        for key in self.__dict__.keys():
-            if isinstance(self.__dict__[key], datetime):
-                new_dict[key] = self.__dict__[key].isoformat()
-            else:
-                new_dict[key] = self.__dict__[key]
-        return new_dict
+        - only instance attributes set will be returned
+        - a key __class__ is added with the class name of the object
+        - created_at and updated_at must be converted to string object in ISO
+        object
+        """
+        dict_1 = self.__dict__.copy()
+        dict_1["__class__"] = self.__class__.__name__
+        for k, v in self.__dict__.items():
+            if k in ("created_at", "updated_at"):
+                v = self.__dict__[k].isoformat()
+                dict_1[k] = v
+        return dict_1
