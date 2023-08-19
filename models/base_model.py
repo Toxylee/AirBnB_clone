@@ -2,7 +2,7 @@
 
 """
     This is the base class for all common attributes/methods for other
-    classes for this Airbnb project.
+    classes for this AIRBNB project.
 
     The goal of this class is to manage common attributes between all other
     classes.
@@ -10,6 +10,8 @@
 """
 from uuid import uuid4
 from datetime import datetime
+import models
+
 
 class BaseModel:
     """The base class for all other classes
@@ -22,7 +24,7 @@ class BaseModel:
             Methods:
                 __init__(self, *args, **kwargs): Initialize the instance when
                     created either from dictionary key/value pair or otherwise
-                __str__(self): Prints the instance created in sring format
+                __str__(self): Print the instance created in sring format
                 save(self): Updates the public instance attribute "updated_at"
                     with the current datetime whenever an instance is modoify
                 to_dict(self): Return a dictionary containig all keys/values
@@ -30,53 +32,44 @@ class BaseModel:
 
     """
     def __init__(self, *args, **kwargs):
-        """
-        Initialize the BaseModel class
-        """
-
-        from models import storage
-        if not kwargs:
-            self.id = str(uuid4())
-            self.created_at = self.updated_at = datetime.now()
-            storage.new(self)
+        """Initialize the instances either from dictionary key/value or
+        otherwise and save each instance"""
+        if kwargs and kwargs != {}:
+            for key in kwargs.keys():
+                if key == "__class__":
+                    continue
+                elif key == "created_at":
+                    self.created_at = datetime.fromisoformat(kwargs[key])
+                elif key == "updated_at":
+                    self.updated_at = datetime.fromisoformat(kwargs[key])
+                else:
+                    setattr(self, key, kwargs[key])
         else:
-            for key, value in kwargs.items():
-                if key != '__class__':
-                    if key in ('created_at', 'updated_at'):
-                        setattr(self, key, datetime.fromisoformat(value))
-                    else:
-                        setattr(self, key, value)
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            """save each instance created to storage object (i.e dict or {})"""
+            models.storage.new(self)
 
     def __str__(self):
-        """
-        Returns the string representation of BaseModel object.
-        [<class name>] (<self.id>) <self.__dict__>
-        """
-        return "[{}] ({}) {}".format(type(self).__name__, self.id,
-                                     self.__dict__)
+        """Print an instance in string format"""
+        return "[{}] ({}) {}".format(
+                self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
-        """
-        Updates 'self.updated_at' with the current datetime
-        """
-        from models import storage
+        """Update "updated_at" attribute with current datetime
+        and save/write the instance to a file"""
         self.updated_at = datetime.now()
-        storage.save()
+        models.storage.save()
 
     def to_dict(self):
-        """
-        returns a dictionary containing all keys/values of __dict__
-        of the instance:
+        """Return a dictionary representation of the instance"""
+        new_dict = {}
+        new_dict['__class__'] = self.__class__.__name__
 
-        - only instance attributes set will be returned
-        - a key __class__ is added with the class name of the object
-        - created_at and updated_at must be converted to string object in ISO
-        object
-        """
-        dict_1 = self.__dict__.copy()
-        dict_1["__class__"] = self.__class__.__name__
-        for k, v in self.__dict__.items():
-            if k in ("created_at", "updated_at"):
-                v = self.__dict__[k].isoformat()
-                dict_1[k] = v
-        return dict_1
+        for key in self.__dict__.keys():
+            if isinstance(self.__dict__[key], datetime):
+                new_dict[key] = self.__dict__[key].isoformat()
+            else:
+                new_dict[key] = self.__dict__[key]
+        return new_dict
