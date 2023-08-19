@@ -32,7 +32,6 @@ def parse(arg):
         retl.append(curly_braces.group())
         return retl
 
-
 class HBNBCommand(cmd.Cmd):
     """Defines the HolbertonBnB command interpreter.
     Attributes:
@@ -47,8 +46,7 @@ class HBNBCommand(cmd.Cmd):
         "City",
         "Place",
         "Amenity",
-        "Review"
-    }
+        "Review"}
 
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
