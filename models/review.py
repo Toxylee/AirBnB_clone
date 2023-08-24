@@ -11,14 +11,13 @@ from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """This class contains all the optional Review details to be supplied
-
-    Attributes:
-        Fields:
-            place_id:string - The Place.id
-            user_id:string - The User.id
-            text:string - Review comments
-    """
-    place_id = ""
-    user_id = ""
-    text = ""
+	"""This class contains all the optional Review details to be supplied
+		Attributes:
+        	Fields:
+            	place_id:string - The Place.id
+            	user_id:string - The User.id
+            	text:string - Review comments
+	"""
+	place_id = ""
+	user_id = ""
+	text = ""

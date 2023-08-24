@@ -11,10 +11,10 @@ from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """This class contains all the optional State details to be supplied
+	"""This class contains all the optional State details to be supplied
 
-    Attributes:
-        Fields:
-            name:string - The name of the state
-    """
-    name = ""
+		Attributes:
+        	Fields:
+            	name:string - The name of the state
+	"""
+	name = ""

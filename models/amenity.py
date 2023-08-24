@@ -11,10 +11,9 @@ from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    """This class contains all the optional amenity details to be supplied
-
-    Attributes:
-        Fields:
+	"""This class contains all the optional amenity details to be supplied
+	Attributes:
+	Fields:
             name:string - The Amenity name
-    """
-    name = ""
+	"""
+	name = ""

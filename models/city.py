@@ -11,12 +11,11 @@ from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    """This class contains all the optional city details to be supplied
-
-    Attributes:
-        Fields:
+	"""This class contains all the optional city details to be supplied
+	Attributes:
+	Fields:
             state_id:string - The State.id
             name:string - The city name
-    """
-    state_id = ""
-    name = ""
+	"""
+	state_id = ""
+	name = ""
