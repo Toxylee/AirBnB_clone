@@ -49,7 +49,7 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             """save each instance created to storage object (i.e dict or {})"""
-            models.storage.new(self)
+            """models.storage.new(self)"""
 
     def __str__(self):
         """Print an instance in string format"""
@@ -60,7 +60,6 @@ class BaseModel:
         """Update "updated_at" attribute with current datetime
         and save/write the instance to a file"""
         self.updated_at = datetime.now()
-        models.storage.save()
 
     def to_dict(self):
         """Return a dictionary representation of the instance"""
